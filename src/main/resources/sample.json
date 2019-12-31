@@ -1,0 +1,6 @@
+{"orderId":1,"amount":100,"currency":"USD","comment":"оплата заказа"}
+{"orderId":14,"amount":1100,"currency":"CAD","comment":"оплата заказа2"}
+{"orderId":14,"amount":1fd100,"currency":"CAD","comment":"оплата заказа2"}
+
+{"orderId":13,"amount":160,"currency":"RUB","comment":"оплата заказа3"}
+{"orderId":23,"amount":101,"currency":"EUR","comment":"оплата заказа4"}
