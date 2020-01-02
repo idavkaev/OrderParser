@@ -14,7 +14,7 @@ public class Order {
     private int id;
     private String comment;
 
-    private int line;
+    private int lineNumber;
     private boolean result = true;
     private String fileName;
     private String errMessage;
@@ -35,12 +35,12 @@ public class Order {
         this.fileName = fileName;
     }
 
-    public int getLine() {
-        return line;
+    public int getLineNumber() {
+        return lineNumber;
     }
 
-    public void setLine(int line) {
-        this.line = line;
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
     }
 
     public boolean isResult() {
@@ -88,15 +88,17 @@ public class Order {
         return String.format("{" +
                         "\"id\":%d, " +
                         "\"amount\":%f, " +
+                        "\"currency:%s\", " +
                         "\"comment\":%s, " +
                         "\"filename\":%s, " +
                         "\"line\":%d, " +
                         "\"result\":%s }",
                 getId(),
                 getAmount(),
+                getCurrency(),
                 getComment(),
                 getFileName(),
-                getLine(),
+                getLineNumber(),
                 isResult() ? "OK" : getErrMessage()
 
                 );
@@ -106,9 +108,9 @@ public class Order {
 
     }
 
-    public Order (String exception, int line, String fileName, boolean result) {
+    public Order (String exception, int lineNumber, String fileName, boolean result) {
         this.errMessage = exception;
-        this.line = line;
+        this.lineNumber = lineNumber;
         this.fileName = fileName;
         this.result = result;
     }
