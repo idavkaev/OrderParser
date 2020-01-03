@@ -1,7 +1,9 @@
 package com.example.orders_parser;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import org.apache.commons.io.FilenameUtils;
@@ -42,25 +44,24 @@ public class LineProcessor implements ItemProcessor<Line, Order> {
         }
     }
 
-    private Order parseJson(Line line) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-
+    private Order parseJson(Line line) {
+        ObjectMapper mapper = new ObjectMapper();
         try {
-            Order order = objectMapper.readValue(line.getLine(), Order.class);
-            order.setFileName(fileName);
+            Order order = mapper.readValue(line.getLine(), Order.class);
+            order.setFileName(FilenameUtils.getName(fileName));
             order.setLineNumber(line.getLineNumber());
             return order;
         } catch (JsonProcessingException ext) {
             Order order = new Order();
-            order.setFileName(fileName);
+            order.setFileName(FilenameUtils.getName(fileName));
             order.setLineNumber(line.getLineNumber());
-            order.setResult(false);
-            order.setErrMessage(ext.getMessage());
+//            order.setResult(false);
+            order.setResult(ext.getMessage());
             return order;
         }
     }
 
-    private Order parseCsv(Line line) throws JsonProcessingException {
+    private Order parseCsv(Line line) {
         CsvSchema orderSchema = CsvSchema.builder()
                 .addColumn("orderId")
                 .addColumn("amount")
@@ -70,15 +71,15 @@ public class LineProcessor implements ItemProcessor<Line, Order> {
         CsvMapper mapper = new CsvMapper();
         try {
             Order order = mapper.readerFor(Order.class).with(orderSchema).readValue(line.getLine());
-            order.setFileName(fileName);
+            order.setFileName(FilenameUtils.getName(fileName));
             order.setLineNumber(line.getLineNumber());
             return order;
         } catch (JsonProcessingException ext) {
             Order order = new Order();
-            order.setFileName(fileName);
+            order.setFileName(FilenameUtils.getName(fileName));
             order.setLineNumber(line.getLineNumber());
-            order.setResult(false);
-            order.setErrMessage(ext.getMessage());
+//            order.setResult(false);
+            order.setResult(ext.getMessage());
             return order;
         }
     }

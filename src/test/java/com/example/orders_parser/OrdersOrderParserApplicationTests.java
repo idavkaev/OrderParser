@@ -1,7 +1,9 @@
 package com.example.orders_parser;
 
 import com.example.orders_parser.configuration.OrderProcessorConfiguration;
+import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.batch.core.*;
@@ -9,18 +11,13 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.test.*;
-import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+
+import java.io.*;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -29,75 +26,58 @@ import static org.junit.Assert.assertThat;
 
 
 @RunWith(SpringRunner.class)
-@SpringBatchTest
-@EnableAutoConfiguration//(exclude = {SimpleBatchConfiguration.class})
-@ContextConfiguration(classes = {OrderProcessorConfiguration.class})
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class })
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@ContextConfiguration(classes = {OrderProcessorConfiguration.class, OrdersOrderParserApplicationTests.TestConfig.class})
 public class OrdersOrderParserApplicationTests {
 
     private final String PATH = "src/test/resources/";
-    private final String EXPECTED_OUTPUT = PATH + "expected_output.json";
-    private final String TEST_OUTPUT = PATH + "test_output.json";
+    private final String EXPECTED_OUTPUT_JSON = PATH + "expected_json.txt";
+    private final String EXPECTED_OUTPUT_CSV = PATH + "expected_csv.txt";
+    private final String TEST_OUTPUT = PATH + "actual_result.txt";
     private final String CSV_INPUT = PATH + "sample.csv";
     private final String JSON_INPUT = PATH + "sample.json";
 
-    @Autowired
-    private FlatFileItemReader<Line> csvReader;
 
     @Autowired
-    private ItemProcessor<Line, Order> itemProcessor;
+    private JobLauncherTestUtils jobLauncherTestUtils;
 
-    @Autowired
-    private ItemWriter<Order> itemWriter;
-
-//    private JobLauncherTestUtils jobLauncherTestUtils;
-
-
-
-//    @Test
-//    public void testJob() throws Exception {
-//
-//        JobExecution jobExecution = jobLauncherTestUtils.launchStep("ProcessingDocumentStep");
-//
-//
-//        Assert.assertEquals("COMPLETED", jobExecution.getExitStatus().getExitCode());
-//    }
-//
-//    private JobParameters defaultJobParameters() {
-//        JobParametersBuilder paramsBuilder = new JobParametersBuilder();
-//        paramsBuilder.addString("file.input", CSV_INPUT);
-//        paramsBuilder.addString("file.output", TEST_OUTPUT);
-//        return paramsBuilder.toJobParameters();
-//    }
-
-
-
-    public JobLauncherTestUtils getJobLauncherTestUtils() {
-
-        return new JobLauncherTestUtils() {
-            @Override
-            @Autowired
-            public void setJob(@Qualifier("OrderParserJob") Job job) {
-                super.setJob(job);
-            }
-        };
+    private JobParameters defaultJobParameters(String filename) {
+        JobParametersBuilder paramsBuilder = new JobParametersBuilder();
+        paramsBuilder.addString("file", filename);
+        return paramsBuilder.toJobParameters();
     }
 
+    @Before
+    public void clearOutputFile() throws FileNotFoundException {
+        //Emptying file for output
+        PrintWriter pw = new PrintWriter(TEST_OUTPUT);
+        pw.close();
 
+    }
+
+    private boolean compareFiles(String file1, String file2) throws IOException {
+        return FileUtils.readLines(new File(file1)).containsAll(FileUtils.readLines(new File(file2)));
+    }
 
     @Test
-    public void testStep() throws Exception {
-        // given
-        JobLauncherTestUtils jobLauncherTestUtils = getJobLauncherTestUtils();
-        JobParameters jobParameters = jobLauncherTestUtils.getUniqueJobParameters();
-
-        // when
+    public void testJsonParsing() throws Exception {
+        JobParameters jobParameters = defaultJobParameters(JSON_INPUT);
+        PrintStream o = new PrintStream(new File(TEST_OUTPUT));
+        System.setOut(o);
         JobExecution jobExecution = jobLauncherTestUtils.launchStep("ProcessingDocumentStep", jobParameters);
-
-        // then
         Assert.assertEquals(ExitStatus.COMPLETED, jobExecution.getExitStatus());
+        Assert.assertTrue(compareFiles(EXPECTED_OUTPUT_JSON, TEST_OUTPUT));
     }
+
+    @Test
+    public void testCsvParsing() throws Exception {
+        JobParameters jobParameters = defaultJobParameters(CSV_INPUT);
+        PrintStream o = new PrintStream(new File(TEST_OUTPUT));
+        System.setOut(o);
+        JobExecution jobExecution = jobLauncherTestUtils.launchStep("ProcessingDocumentStep", jobParameters);
+        Assert.assertEquals(ExitStatus.COMPLETED, jobExecution.getExitStatus());
+        Assert.assertTrue(compareFiles(EXPECTED_OUTPUT_CSV, TEST_OUTPUT));
+    }
+
 
     @Configuration
     static class TestConfig {
@@ -107,7 +87,7 @@ public class OrdersOrderParserApplicationTests {
             return new JobLauncherTestUtils() {
                 @Override
                 @Autowired
-                public void setJob(@Qualifier("OrderParserJob") Job job) {
+                public void setJob( Job job) {
                     super.setJob(job);
                 }
             };

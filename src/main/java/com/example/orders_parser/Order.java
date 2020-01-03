@@ -1,31 +1,26 @@
 package com.example.orders_parser;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-@JsonPropertyOrder({"orderId", "amount", "currency", "comment"})
-@JsonIgnoreProperties({"line", "result", "filename"})
+@JsonPropertyOrder({"id", "amount", "comment", "filename", "line", "result"})
+//@JsonIgnoreProperties({"line", "result", "filename"})
 public class Order {
 
-    private double amount;
-    private String currency;
-    @JsonProperty("orderId")
+    @JsonProperty("id")
+    @JsonAlias("orderId")
     private int id;
+    private double amount;
+    @JsonIgnore
+    private String currency;
     private String comment;
-
-    private int lineNumber;
-    private boolean result = true;
+    @JsonProperty("filename")
     private String fileName;
-    private String errMessage;
-
-    public String getErrMessage() {
-        return errMessage;
-    }
-
-    public void setErrMessage(String errMessage) {
-        this.errMessage = errMessage;
-    }
+    @JsonProperty("line")
+    private int lineNumber;
+    private String result = "OK";
 
     public String getFileName() {
         return fileName;
@@ -43,11 +38,11 @@ public class Order {
         this.lineNumber = lineNumber;
     }
 
-    public boolean isResult() {
+    public String getResult() {
         return result;
     }
 
-    public void setResult(boolean result) {
+    public void setResult(String result) {
         this.result = result;
     }
 
@@ -83,36 +78,47 @@ public class Order {
         this.comment = comment;
     }
 
+//    @Override
+//    public String toString() {
+//        return String.format("{" +
+//                        "\"id\":%d, " +
+//                        "\"amount\":%f, " +
+//                        "\"currency\":%s\", " +
+//                        "\"comment\":%s, " +
+//                        "\"filename\":%s, " +
+//                        "\"line\":%d, " +
+//                        "\"result\":%s }",
+//                getId(),
+//                getAmount(),
+//                getCurrency(),
+//                getComment(),
+//                getFileName(),
+//                getLineNumber(),
+//                isResult() ? "OK" : getErrMessage()
+//
+//                );
+//    }
+
+
     @Override
     public String toString() {
-        return String.format("{" +
-                        "\"id\":%d, " +
-                        "\"amount\":%f, " +
-                        "\"currency:%s\", " +
-                        "\"comment\":%s, " +
-                        "\"filename\":%s, " +
-                        "\"line\":%d, " +
-                        "\"result\":%s }",
-                getId(),
-                getAmount(),
-                getCurrency(),
-                getComment(),
-                getFileName(),
-                getLineNumber(),
-                isResult() ? "OK" : getErrMessage()
-
-                );
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            return "Could not serialize that instance";
+        }
     }
 
     public Order(){
 
     }
 
-    public Order (String exception, int lineNumber, String fileName, boolean result) {
-        this.errMessage = exception;
-        this.lineNumber = lineNumber;
-        this.fileName = fileName;
-        this.result = result;
-    }
+//    public Order (String exception, int lineNumber, String fileName, boolean result) {
+//        this.errMessage = exception;
+//        this.lineNumber = lineNumber;
+//        this.fileName = fileName;
+//        this.result = result;
+//    }
 
 }

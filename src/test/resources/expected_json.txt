@@ -1,0 +1,6 @@
+{"id":1,"amount":100.0,"comment":"оплата заказа","filename":"sample.json","line":1,"result":"OK"}
+{"id":14,"amount":1800.0,"comment":"оплата заказа2","filename":"sample.json","line":3,"result":"OK"}
+{"id":23,"amount":101.0,"comment":"оплата заказа4","filename":"sample.json","line":5,"result":"OK"}
+{"id":14,"amount":1100.0,"comment":"оплата заказа2","filename":"sample.json","line":2,"result":"OK"}
+{"id":13,"amount":160.0,"comment":"оплата заказа3","filename":"sample.json","line":4,"result":"OK"}
+{"id":0,"amount":0.0,"comment":null,"filename":"sample.json","line":6,"result":"Unrecognized token 'RUB': was expecting (JSON String, Number, Array, Object or token 'null', 'true' or 'false')\n at [Source: (String)\"{\"orderId\":13,\"amount\":190,\"currency\":RUB,\"comment\":\"оплата заказа3\"}\"; line: 1, column: 42]"}
