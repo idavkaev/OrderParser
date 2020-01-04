@@ -1,12 +1,13 @@
-package com.example.orders_parser;
+package com.example.orderparser;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonPropertyOrder({"id", "amount", "comment", "filename", "line", "result"})
-//@JsonIgnoreProperties({"line", "result", "filename"})
 public class Order {
 
     @JsonProperty("id")
@@ -38,17 +39,13 @@ public class Order {
         this.lineNumber = lineNumber;
     }
 
-    public String getResult() {
-        return result;
-    }
+    public String getResult() { return result; }
 
     public void setResult(String result) {
         this.result = result;
     }
 
-    public double getAmount() {
-        return amount;
-    }
+    public double getAmount() { return amount; }
 
     public void setAmount(double amount) {
         this.amount = amount;
@@ -78,47 +75,17 @@ public class Order {
         this.comment = comment;
     }
 
-//    @Override
-//    public String toString() {
-//        return String.format("{" +
-//                        "\"id\":%d, " +
-//                        "\"amount\":%f, " +
-//                        "\"currency\":%s\", " +
-//                        "\"comment\":%s, " +
-//                        "\"filename\":%s, " +
-//                        "\"line\":%d, " +
-//                        "\"result\":%s }",
-//                getId(),
-//                getAmount(),
-//                getCurrency(),
-//                getComment(),
-//                getFileName(),
-//                getLineNumber(),
-//                isResult() ? "OK" : getErrMessage()
-//
-//                );
-//    }
-
-
     @Override
     public String toString() {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.writeValueAsString(this);
         } catch (JsonProcessingException e) {
-            return "Could not serialize that instance";
+            return "Could not serialize instance of Order";
         }
     }
 
     public Order(){
-
     }
-
-//    public Order (String exception, int lineNumber, String fileName, boolean result) {
-//        this.errMessage = exception;
-//        this.lineNumber = lineNumber;
-//        this.fileName = fileName;
-//        this.result = result;
-//    }
 
 }

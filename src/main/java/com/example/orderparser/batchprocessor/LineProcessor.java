@@ -1,21 +1,18 @@
-package com.example.orders_parser;
+package com.example.orderparser.batchprocessor;
 
+import com.example.orderparser.Extensions;
+import com.example.orderparser.Line;
+import com.example.orderparser.Order;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.EnumUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
 
 public class LineProcessor implements ItemProcessor<Line, Order> {
-
-    private static final Logger log = LoggerFactory.getLogger(LineProcessor.class);
 
     private String fileName;
 
@@ -25,12 +22,11 @@ public class LineProcessor implements ItemProcessor<Line, Order> {
 
     @Override
     public Order process(Line s) throws Exception {
-        log.info("Processing line");
         String extension = FilenameUtils.getExtension(fileName);
         return parse(s, EnumUtils.getEnumIgnoreCase(Extensions.class, extension));
     }
 
-    public Order parse(Line line, Extensions ext) throws JsonProcessingException {
+    public Order parse(Line line, Extensions ext) {
         switch(ext) {
             case CSV:
                 return parseCsv(line);
@@ -55,7 +51,6 @@ public class LineProcessor implements ItemProcessor<Line, Order> {
             Order order = new Order();
             order.setFileName(FilenameUtils.getName(fileName));
             order.setLineNumber(line.getLineNumber());
-//            order.setResult(false);
             order.setResult(ext.getMessage());
             return order;
         }
@@ -78,7 +73,6 @@ public class LineProcessor implements ItemProcessor<Line, Order> {
             Order order = new Order();
             order.setFileName(FilenameUtils.getName(fileName));
             order.setLineNumber(line.getLineNumber());
-//            order.setResult(false);
             order.setResult(ext.getMessage());
             return order;
         }
@@ -86,6 +80,5 @@ public class LineProcessor implements ItemProcessor<Line, Order> {
 
 //   TODO: Implement to support XLSX
 //    private Order parseXlsx() {
-//        return null;
 //    }
 }

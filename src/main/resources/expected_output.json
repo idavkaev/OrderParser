@@ -1,5 +1,0 @@
-{"id":1, "amount":100,000000, "currency:USD", "comment":оплата заказа, "filename":../src/main/resources/sample.json, "line":1, "result":OK }
-{"id":14, "amount":1100,000000, "currency:CAD", "comment":оплата заказа2, "filename":../src/main/resources/sample.json, "line":2, "result":OK }
-{"id":14, "amount":1800,000000, "currency:CAD", "comment":оплата заказа2, "filename":../src/main/resources/sample.json, "line":3, "result":OK }
-{"id":13, "amount":160,000000, "currency:RUB", "comment":оплата заказа3, "filename":../src/main/resources/sample.json, "line":4, "result":OK }
-{"id":23, "amount":101,000000, "currency:EUR", "comment":оплата заказа4, "filename":../src/main/resources/sample.json, "line":5, "result":OK }

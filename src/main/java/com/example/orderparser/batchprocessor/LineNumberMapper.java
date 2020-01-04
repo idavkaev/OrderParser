@@ -1,14 +1,12 @@
-package com.example.orders_parser;
+package com.example.orderparser.batchprocessor;
 
+import com.example.orderparser.Line;
 import org.springframework.batch.item.file.LineMapper;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class LineNumberMapper implements LineMapper<Line> {
-    @Override
-    public Line mapLine(String s, int i) throws Exception {
-        return new Line(i, s);
 
+    @Override
+    public Line mapLine(String s, int i) {
+        return new Line(i, s);
     }
 }

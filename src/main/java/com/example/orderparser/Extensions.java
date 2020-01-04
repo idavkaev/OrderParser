@@ -1,4 +1,4 @@
-package com.example.orders_parser;
+package com.example.orderparser;
 
 public enum Extensions {
     CSV("csv"),
@@ -9,6 +9,4 @@ public enum Extensions {
     private Extensions(String label){
         this.label = label;
     }
-
-
 }

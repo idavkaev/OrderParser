@@ -1,9 +1,9 @@
-package com.example.orders_parser;
+package com.example.orderparser;
 
 public class Line {
-    public int getLineNumber() {
-        return lineNumber;
-    }
+
+    private int lineNumber;
+    private String line;
 
     public Line(int lineNumber, String line) {
         this.lineNumber = lineNumber;
@@ -14,6 +14,10 @@ public class Line {
         this.lineNumber = lineNumber;
     }
 
+    public int getLineNumber() {
+        return lineNumber;
+    }
+
     public String getLine() {
         return line;
     }
@@ -21,9 +25,5 @@ public class Line {
     public void setLine(String line) {
         this.line = line;
     }
-
-    private int lineNumber;
-    private String line;
-
 
 }
