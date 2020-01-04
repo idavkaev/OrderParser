@@ -24,8 +24,6 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 
-import javax.sql.DataSource;
-
 @Configuration
 @EnableBatchProcessing
 @PropertySource("application.properties")
@@ -40,11 +38,6 @@ public class OrderProcessorConfiguration {
     @Autowired
     StepBuilderFactory stepBuilderFactory;
 
-
-    public void setDataSource(DataSource dataSource) {
-        //This BatchConfigurer ignores any DataSource
-    }
-
     @Bean
     public TaskExecutor taskExecutor() {
         SimpleAsyncTaskExecutor taskExecutor = new SimpleAsyncTaskExecutor();
@@ -56,7 +49,6 @@ public class OrderProcessorConfiguration {
     @StepScope
     public FlatFileItemReader<Line> reader(@Value("#{jobParameters['file']}") String input) {
         FlatFileItemReader reader = new FlatFileItemReader<>();
-//        reader.setLineMapper(new PassThroughLineMapper());
         reader.setLineMapper(new LineNumberMapper());
         reader.setResource(new FileSystemResource(input));
 
